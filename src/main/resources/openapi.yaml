@@ -1,0 +1,429 @@
+openapi: 3.0.3
+info:
+  title: Bike Rental
+  description: Bike Rental
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/bike-rental/v1'
+tags:
+  - name: bike
+    description: Everything about bikes
+  - name: station
+    description: Everything about stations
+  - name: user
+    description: Everything about users
+  - name: rental
+    description: Everything about rentals
+paths:
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all Users
+      description: Get all Users
+      operationId: getUsers
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get information about specific user
+      description: Get information about user with `userId`.
+      operationId: getUser
+      parameters:
+        - name: userId
+          in: path
+          description: Id of user to which information are requested
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /users/{userId}/rentals:
+    get:
+      tags:
+        - rental
+        - user
+      summary: Get rental history for specified user
+      description: Returns all rentals for the specified user.
+      operationId: getRentalsByUser
+      parameters:
+        - name: userId
+          in: path
+          description: Id of user for which rental history is requested
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /bikes:
+    get:
+      tags:
+        - bike
+      summary: Get all bikes
+      description: Returns a list of all currently existing bikes
+      operationId: getBikes
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bike'
+  /bikes/{bikeId}:
+    get:
+      tags:
+        - bike
+      summary: Get information for one bike
+      description: Returns information for bike with `bikeId`
+      operationId: getBike
+      parameters:
+        - name: bikeId
+          in: path
+          description: Id of bike for which information are requested
+          required: true
+          schema:
+            $ref: '#/components/schemas/BikeId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bike'
+        404:
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - bike
+      summary: Remove bike from inventory
+      description: Remove a bike with `bikeId` from inventory
+      operationId: deleteBike
+      parameters:
+        - name: bikeId
+          in: path
+          description: Id of bike for which information are requested
+          required: true
+          schema:
+            $ref: '#/components/schemas/BikeId'
+      responses:
+        204:
+          description: Successful operation
+        404:
+          $ref: '#/components/responses/NotFound'
+  /bikes/{bikeId}/rentals:
+    put:
+      tags:
+        - rental
+        - bike
+      summary: Rent a bike
+      description: Rent the bike `bikeId`
+      operationId: rentBike
+      parameters:
+        - name: bikeId
+          in: path
+          description: Id of bike which is rented
+          required: true
+          schema:
+            $ref: '#/components/schemas/BikeId'
+      requestBody:
+        description: Rent bike with `bikeId` to User with `userId`
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  $ref: '#/components/schemas/UserId'
+      responses:
+        200:
+          description: Successfully updated existing rental
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        201:
+          description: Successfully created new rental
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /stations:
+    get:
+      tags:
+        - station
+      summary: Get all stations
+      description: Returns a list of all currently existing stations
+      operationId: getStations
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+  /stations/{stationId}:
+    get:
+      tags:
+        - station
+      summary: Get information on specific station
+      description: Returns information of station with `stationId`
+      operationId: getStation
+      parameters:
+        - name: stationId
+          in: path
+          description: Id of station for which information are requested
+          required: true
+          schema:
+            $ref: '#/components/schemas/StationId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /stations/{stationId}/bikes:
+    get:
+      tags:
+        - bike
+        - station
+      summary: Get all bikes at a station
+      description: Returns a list of all currently available bikes at station `stationId`
+      operationId: getBikesByStation
+      parameters:
+        - name: stationId
+          in: path
+          description: Id of station for which all currently available bikes are requested
+          required: true
+          schema:
+            $ref: '#/components/schemas/StationId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bike'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /rentals:
+    get:
+      tags:
+        - rental
+      summary: Get all rentals
+      description: Return a list of all rentals
+      operationId: getRentals
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rental'
+  /rentals/{rentalId}:
+    get:
+      tags:
+        - rental
+      summary: Get rental information
+      description: Return information on specified rental
+      operationId: getRental
+      parameters:
+        - name: rentalId
+          in: path
+          description: Id of requested rental
+          required: true
+          schema:
+            $ref: '#/components/schemas/RentalId'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        404:
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - rental
+      summary: End rental
+      description: Returns a bike and ends rental
+      operationId: endRental
+      parameters:
+        - name: rentalId
+          in: path
+          description: Id of requested rental
+          required: true
+          schema:
+            $ref: '#/components/schemas/RentalId'
+      requestBody:
+        description: End an active rental with `rentalId`
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndRentalRequest'
+      responses:
+        200:
+          description: Successful operation
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Rental'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+components:
+  responses:
+    BadRequest:
+      description: Your request is missing required informations or is ill-formatted
+    NotFound:
+      description: The representation you are looking for does not exist
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/UserId'
+        name:
+          type: string
+    Station:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/StationId'
+        name:
+          type: string
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        maximumBikeCapacity:
+          type: integer
+          format: int32
+          minimum: 0
+    Rental:
+      type: object
+      required:
+        - id
+        - start
+        - startStationId
+      properties:
+        id:
+          $ref: '#/components/schemas/RentalId'
+        userId:
+          $ref: '#/components/schemas/UserId'
+        bikeId:
+          $ref: '#/components/schemas/BikeId'
+        start:
+          type: string
+          format: date-time
+        startStationId:
+          $ref: '#/components/schemas/StationId'
+        end:
+          type: string
+          format: date-time
+        endStationId:
+          $ref: '#/components/schemas/StationId'
+    Bike:
+      type: object
+      required:
+        - id
+        - dayOfPurchase
+        - stationId
+        - brand
+        - electrified
+        - type
+      properties:
+        id:
+          $ref: '#/components/schemas/BikeId'
+        dayOfPurchase:
+          type: string
+          format: date
+        stationId:
+          $ref: '#/components/schemas/StationId'
+        brand:
+          type: string
+        electrified:
+          type: boolean
+          default: false
+        type:
+          $ref: '#/components/schemas/BikeType'
+    BikeId:
+      type: string
+      format: uuid
+    StationId:
+      type: string
+      format: uuid
+    UserId:
+      type: string
+      format: uuid
+    RentalId:
+      type: string
+      format: uuid
+    BikeType:
+      type: string
+      enum:
+        - Mountainbike
+        - Gravelbike
+        - Trekkingbike
+    EndRentalRequest:
+      type: object
+      required:
+        - endStationId
+      properties:
+        endStationId:
+          $ref: '#/components/schemas/StationId'

@@ -1,0 +1,29 @@
+
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: rest-server
+  datasource:
+    url: jdbc:h2:file:./bike-rental-db;NON_KEYWORDS=END
+    username: sa
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+  security:
+    api:
+      key: asdf
+
+management:
+  endpoint:
+    env:
+      show-values: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /bike-rental/v1/actuator
+    enabled-by-default: true

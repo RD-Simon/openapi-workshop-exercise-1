@@ -26,6 +26,14 @@
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
       <version>1.5.5.Final</version>
@@ -37,9 +45,14 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>5.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <optional>true</optional>
+      <version>1.18.32</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -50,6 +63,17 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+      <version>0.2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>1.8.0</version>
     </dependency>
   </dependencies>
 
@@ -117,7 +141,46 @@
               <version>0.2.0</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>
+              -Amapstruct.defaultComponentModel=spring
+            </arg>
+            <arg>
+              -Amapstruct.defaultInjectionStrategy=constructor
+            </arg>
+            <arg>
+              -Amapstruct.unmappedTargetPolicy=ERROR
+            </arg>
+          </compilerArgs>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>7.5.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+              <generatorName>spring</generatorName>
+              <library>spring-boot</library>
+              <modelNameSuffix>Dto</modelNameSuffix>
+              <apiPackage>com.randstaddigital.workshop.api</apiPackage>
+              <modelPackage>com.randstaddigital.workshop.dto</modelPackage>
+              <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+              <generateApiTests>false</generateApiTests>
+              <generateModelTests>false</generateModelTests>
+              <configOptions>
+                <sourceFolder>src/gen/java/main</sourceFolder>
+                <useSpringBoot3>true</useSpringBoot3>
+                <delegatePattern>true</delegatePattern>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

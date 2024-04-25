@@ -1,4 +1,4 @@
-package com.randstaddigital.restserver;
+package com.randstaddigital.workshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RestServerApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(RestServerApplication.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(RestServerApplication.class);
+  }
 }
