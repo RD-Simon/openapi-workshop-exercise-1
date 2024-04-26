@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
@@ -39,6 +40,7 @@ public class AuthTokenSecurityConfig {
       throws Exception {
     return http.securityMatcher("/**")
         .csrf(AbstractHttpConfigurer::disable)
+        .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))
         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
         .addFilterBefore(createApiKeyFilter(), UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(

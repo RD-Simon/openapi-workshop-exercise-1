@@ -33,6 +33,10 @@ public class RentalService {
     return rentalRepository.findByBikeIdAndUserId(bikeId, userId).map(rentalMapper::toModel);
   }
 
+  public List<Rental> getRentalsByUserId(UUID userId) {
+    return rentalRepository.findByUserId(userId).stream().map(rentalMapper::toModel).toList();
+  }
+
   public Rental startRental(UUID bikeId, UUID userId) {
     var bikeResponse = bikeService.getBikeById(bikeId);
     if (bikeResponse.isEmpty()) {
