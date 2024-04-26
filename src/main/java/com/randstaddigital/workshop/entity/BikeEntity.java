@@ -23,6 +23,6 @@ public class BikeEntity {
   private LocalDate dayOfPurchase;
   private UUID stationId;
   private String brand;
-  private boolean electrified;
+  private Boolean electrified;
   private BikeTypeEntity type;
 }

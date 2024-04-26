@@ -6,10 +6,12 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.randstaddigital.workshop.api.BikesApiDelegate;
 import com.randstaddigital.workshop.dto.BikeDto;
+import com.randstaddigital.workshop.dto.BikeTypeDto;
 import com.randstaddigital.workshop.dto.RentBikeRequestDto;
 import com.randstaddigital.workshop.dto.RentalDto;
 import com.randstaddigital.workshop.mapper.BikeMapper;
 import com.randstaddigital.workshop.mapper.RentalMapper;
+import com.randstaddigital.workshop.model.Bike;
 import com.randstaddigital.workshop.model.Rental;
 import com.randstaddigital.workshop.service.BikeService;
 import com.randstaddigital.workshop.service.RentalService;
@@ -45,9 +47,12 @@ public class BikesApiDelegateImpl implements BikesApiDelegate {
   }
 
   @Override
-  public ResponseEntity<List<BikeDto>> getBikes() {
+  public ResponseEntity<List<BikeDto>> getBikes(
+      String brand, BikeTypeDto type, Boolean electrified) {
+    var filter =
+        Bike.builder().brand(brand).type(bikeMapper.toModel(type)).electrified(electrified).build();
     return new ResponseEntity<>(
-        bikeService.getAllBikes().stream().map(bikeMapper::toDto).toList(), OK);
+        bikeService.getAllBikes(filter).stream().map(bikeMapper::toDto).toList(), OK);
   }
 
   @Override

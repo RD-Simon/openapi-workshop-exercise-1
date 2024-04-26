@@ -10,6 +10,7 @@ import com.randstaddigital.workshop.mapper.RentalMapper;
 import com.randstaddigital.workshop.mapper.UserMapper;
 import com.randstaddigital.workshop.service.RentalService;
 import com.randstaddigital.workshop.service.UserService;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,9 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
   private final RentalMapper rentalMapper;
 
   @Override
-  public ResponseEntity<List<RentalDto>> getRentalsByUser(UUID userId) {
+  public ResponseEntity<List<RentalDto>> getRentalsByUser(
+      UUID userId, OffsetDateTime starting, OffsetDateTime ending) {
+    // TODO filter
     return new ResponseEntity<>(
         rentalService.getRentalsByUserId(userId).stream().map(rentalMapper::toDto).toList(), OK);
   }

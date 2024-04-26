@@ -39,8 +39,8 @@ paths:
       description: Get information about user with `userId`.
       operationId: getUser
       parameters:
-        - name: userId
-          in: path
+        - in: path
+          name: userId
           description: Id of user to which information are requested
           required: true
           schema:
@@ -63,12 +63,26 @@ paths:
       description: Returns all rentals for the specified user.
       operationId: getRentalsByUser
       parameters:
-        - name: userId
-          in: path
+        - in: path
+          name: userId
           description: Id of user for which rental history is requested
           required: true
           schema:
             $ref: '#/components/schemas/UserId'
+        - in: query
+          name: starting
+          schema:
+            type: string
+            format: date-time
+          description: >
+            Filters result to only contain Rentals starting or ending after `startDate`
+        - in: query
+          name: ending
+          schema:
+            type: string
+            format: date-time
+          description: >
+            Filters result to only contain Rentals starting or endig before `endDate`
       responses:
         200:
           description: Successful operation
@@ -87,6 +101,22 @@ paths:
       summary: Get all bikes
       description: Returns a list of all currently existing bikes
       operationId: getBikes
+      parameters:
+        - in: query
+          name: brand
+          schema:
+            type: string
+          description: Filter result by `brand`
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/BikeType'
+          description: Filter result by `type`
+        - in: query
+          name: electrified
+          schema:
+            type: boolean
+          description: Filter result by `electrified`
       responses:
         200:
           description: Successful operation
@@ -104,8 +134,8 @@ paths:
       description: Returns information for bike with `bikeId`
       operationId: getBike
       parameters:
-        - name: bikeId
-          in: path
+        - in: path
+          name: bikeId
           description: Id of bike for which information are requested
           required: true
           schema:
@@ -126,8 +156,8 @@ paths:
       description: Remove a bike with `bikeId` from inventory
       operationId: deleteBike
       parameters:
-        - name: bikeId
-          in: path
+        - in: path
+          name: bikeId
           description: Id of bike for which information are requested
           required: true
           schema:
@@ -146,8 +176,8 @@ paths:
       description: Rent the bike `bikeId`
       operationId: rentBike
       parameters:
-        - name: bikeId
-          in: path
+        - in: path
+          name: bikeId
           description: Id of bike which is rented
           required: true
           schema:
@@ -205,8 +235,8 @@ paths:
       description: Returns information of station with `stationId`
       operationId: getStation
       parameters:
-        - name: stationId
-          in: path
+        - in: path
+          name: stationId
           description: Id of station for which information are requested
           required: true
           schema:
@@ -229,12 +259,27 @@ paths:
       description: Returns a list of all currently available bikes at station `stationId`
       operationId: getBikesByStation
       parameters:
-        - name: stationId
-          in: path
+        - in: path
+          name: stationId
           description: Id of station for which all currently available bikes are requested
           required: true
           schema:
             $ref: '#/components/schemas/StationId'
+        - in: query
+          name: brand
+          schema:
+            type: string
+          description: Filter result by `brand`
+        - in: query
+          name: type
+          schema:
+            $ref: '#/components/schemas/BikeType'
+          description: Filter result by `type`
+        - in: query
+          name: electrified
+          schema:
+            type: boolean
+          description: Filter result by `electrified`
       responses:
         200:
           description: Successful operation
@@ -253,6 +298,21 @@ paths:
       summary: Get all rentals
       description: Return a list of all rentals
       operationId: getRentals
+      parameters:
+        - in: query
+          name: starting
+          schema:
+            type: string
+            format: date-time
+          description: >
+            Filters result to only contain Rentals starting or ending after `startDate`
+        - in: query
+          name: ending
+          schema:
+            type: string
+            format: date-time
+          description: >
+            Filters result to only contain Rentals starting or endig before `endDate`
       responses:
         200:
           description: Successful operation
@@ -270,8 +330,8 @@ paths:
       description: Return information on specified rental
       operationId: getRental
       parameters:
-        - name: rentalId
-          in: path
+        - in: path
+          name: rentalId
           description: Id of requested rental
           required: true
           schema:
@@ -292,8 +352,8 @@ paths:
       description: Returns a bike and ends rental
       operationId: endRental
       parameters:
-        - name: rentalId
-          in: path
+        - in: path
+          name: rentalId
           description: Id of requested rental
           required: true
           schema:
@@ -318,6 +378,11 @@ paths:
           $ref: '#/components/responses/NotFound'
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   responses:
     BadRequest:
       description: Your request is missing required informations or is ill-formatted

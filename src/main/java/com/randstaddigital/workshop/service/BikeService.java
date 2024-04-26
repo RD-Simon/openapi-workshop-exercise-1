@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,8 +17,10 @@ public class BikeService {
   private final BikeRepository bikeRepository;
   private final BikeMapper bikeMapper;
 
-  public List<Bike> getAllBikes() {
-    return bikeRepository.findAll().stream().map(bikeMapper::toModel).toList();
+  public List<Bike> getAllBikes(Bike filter) {
+    return bikeRepository.findAll(Example.of(bikeMapper.toEntity(filter))).stream()
+        .map(bikeMapper::toModel)
+        .toList();
   }
 
   public Optional<Bike> getBikeById(UUID id) {
@@ -26,6 +29,12 @@ public class BikeService {
 
   public List<Bike> getBikesByStationId(UUID stationId) {
     return bikeRepository.findAllByStationId(stationId).stream().map(bikeMapper::toModel).toList();
+  }
+
+  public List<Bike> getBikesByStationId(Bike bikeFilter) {
+    return bikeRepository.findAll(Example.of(bikeMapper.toEntity(bikeFilter))).stream()
+        .map(bikeMapper::toModel)
+        .toList();
   }
 
   public void deleteBikeById(UUID id) {

@@ -8,6 +8,7 @@ import com.randstaddigital.workshop.dto.EndRentalRequestDto;
 import com.randstaddigital.workshop.dto.RentalDto;
 import com.randstaddigital.workshop.mapper.RentalMapper;
 import com.randstaddigital.workshop.service.RentalService;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,9 @@ public class RentalsApiDelegateImpl implements RentalsApiDelegate {
   }
 
   @Override
-  public ResponseEntity<List<RentalDto>> getRentals() {
+  public ResponseEntity<List<RentalDto>> getRentals(
+      OffsetDateTime starting, OffsetDateTime ending) {
+    // TODO filter
     return new ResponseEntity<>(
         rentalService.getAllRentals().stream().map(rentalMapper::toDto).toList(), OK);
   }

@@ -5,9 +5,11 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.randstaddigital.workshop.api.StationsApiDelegate;
 import com.randstaddigital.workshop.dto.BikeDto;
+import com.randstaddigital.workshop.dto.BikeTypeDto;
 import com.randstaddigital.workshop.dto.StationDto;
 import com.randstaddigital.workshop.mapper.BikeMapper;
 import com.randstaddigital.workshop.mapper.StationMapper;
+import com.randstaddigital.workshop.model.Bike;
 import com.randstaddigital.workshop.service.BikeService;
 import com.randstaddigital.workshop.service.StationService;
 import java.util.List;
@@ -26,9 +28,17 @@ public class StationsApiDelegateImpl implements StationsApiDelegate {
   private final BikeMapper bikeMapper;
 
   @Override
-  public ResponseEntity<List<BikeDto>> getBikesByStation(UUID stationId) {
+  public ResponseEntity<List<BikeDto>> getBikesByStation(
+      UUID stationId, String brand, BikeTypeDto type, Boolean electrified) {
+    var filter =
+        Bike.builder()
+            .stationId(stationId)
+            .brand(brand)
+            .type(bikeMapper.toModel(type))
+            .electrified(electrified)
+            .build();
     return new ResponseEntity<>(
-        bikeService.getBikesByStationId(stationId).stream().map(bikeMapper::toDto).toList(), OK);
+        bikeService.getBikesByStationId(filter).stream().map(bikeMapper::toDto).toList(), OK);
   }
 
   @Override
