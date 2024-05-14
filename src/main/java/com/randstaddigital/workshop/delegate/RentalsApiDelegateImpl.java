@@ -43,8 +43,11 @@ public class RentalsApiDelegateImpl implements RentalsApiDelegate {
   @Override
   public ResponseEntity<List<RentalDto>> getRentals(
       OffsetDateTime starting, OffsetDateTime ending) {
-    // TODO filter
     return new ResponseEntity<>(
-        rentalService.getAllRentals().stream().map(rentalMapper::toDto).toList(), OK);
+        rentalService.getAllRentals().stream()
+            .filter(rental -> rentalService.isWithinTimeRange(rental, starting, ending))
+            .map(rentalMapper::toDto)
+            .toList(),
+        OK);
   }
 }

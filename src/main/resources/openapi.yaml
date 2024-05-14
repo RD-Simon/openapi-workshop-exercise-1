@@ -82,7 +82,7 @@ paths:
             type: string
             format: date-time
           description: >
-            Filters result to only contain Rentals starting or endig before `endDate`
+            Filters result to only contain Rentals starting or ending before `endDate`
       responses:
         200:
           description: Successful operation
@@ -312,7 +312,7 @@ paths:
             type: string
             format: date-time
           description: >
-            Filters result to only contain Rentals starting or endig before `endDate`
+            Filters result to only contain Rentals starting or ending before `endDate`
       responses:
         200:
           description: Successful operation
@@ -340,7 +340,7 @@ paths:
         200:
           description: Successful operation
           content:
-            applicaton/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Rental'
         404:
@@ -369,7 +369,7 @@ paths:
         200:
           description: Successful operation
           content:
-            applicaton/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Rental'
         400:
@@ -385,7 +385,7 @@ components:
       name: X-API-KEY
   responses:
     BadRequest:
-      description: Your request is missing required informations or is ill-formatted
+      description: Your request is missing required information or is ill-formatted
     NotFound:
       description: The representation you are looking for does not exist
   schemas:

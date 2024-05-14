@@ -1,5 +1,6 @@
 package com.randstaddigital.workshop.service;
 
+import static java.time.OffsetDateTime.now;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.randstaddigital.workshop.mapper.RentalMapper;
@@ -38,20 +39,20 @@ public class RentalService {
   }
 
   public Rental startRental(UUID bikeId, UUID userId) {
-    var bikeResponse = bikeService.getBikeById(bikeId);
-    if (bikeResponse.isEmpty()) {
-      throw new ResponseStatusException(NOT_FOUND);
-    }
-    var bike = bikeResponse.get();
-    var rental =
-        Rental.builder()
-            .userId(userId)
-            .bikeId(bike.getId())
-            .start(OffsetDateTime.now())
-            .startStationId(bike.getStationId())
-            .build();
-
-    return rentalMapper.toModel(rentalRepository.saveAndFlush(rentalMapper.toEntity(rental)));
+    return bikeService
+        .getBikeById(bikeId)
+        .map(
+            bike ->
+                Rental.builder()
+                    .userId(userId)
+                    .bikeId(bike.getId())
+                    .start(now())
+                    .startStationId(bike.getStationId())
+                    .build())
+        .map(rentalMapper::toEntity)
+        .map(rentalRepository::saveAndFlush)
+        .map(rentalMapper::toModel)
+        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
   }
 
   public Rental endRental(UUID id, UUID endStationId) {
@@ -61,9 +62,28 @@ public class RentalService {
   }
 
   private Rental endRental(Rental rental, UUID endStationId) {
-    rental.setEndStationId(endStationId);
-    // TODO Update station in bike
+    rental.setEndStationId(endStationId).setEnd(now());
+
+    bikeService.updateEndStation(rental.getBikeId(), endStationId);
 
     return rentalMapper.toModel(rentalRepository.saveAndFlush(rentalMapper.toEntity(rental)));
+  }
+
+  public boolean isWithinTimeRange(Rental rental, OffsetDateTime starting, OffsetDateTime ending) {
+    if (starting == null && ending == null) {
+      return true;
+    }
+    if (starting == null) {
+      return ending.isAfter(rental.getStart());
+    }
+    if (ending == null) {
+      return starting.isBefore(rental.getStart())
+          || rental.getEnd() == null
+          || starting.isBefore(rental.getEnd());
+    }
+    return ending.isAfter(rental.getStart())
+        && (starting.isBefore(rental.getStart())
+            || rental.getEnd() == null
+            || starting.isBefore(rental.getEnd()));
   }
 }

@@ -29,9 +29,12 @@ public class UsersApiDelegateImpl implements UsersApiDelegate {
   @Override
   public ResponseEntity<List<RentalDto>> getRentalsByUser(
       UUID userId, OffsetDateTime starting, OffsetDateTime ending) {
-    // TODO filter
     return new ResponseEntity<>(
-        rentalService.getRentalsByUserId(userId).stream().map(rentalMapper::toDto).toList(), OK);
+        rentalService.getRentalsByUserId(userId).stream()
+            .filter(rental -> rentalService.isWithinTimeRange(rental, starting, ending))
+            .map(rentalMapper::toDto)
+            .toList(),
+        OK);
   }
 
   @Override

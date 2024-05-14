@@ -1,5 +1,7 @@
 package com.randstaddigital.workshop.service;
 
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+
 import com.randstaddigital.workshop.mapper.BikeMapper;
 import com.randstaddigital.workshop.model.Bike;
 import com.randstaddigital.workshop.repository.BikeRepository;
@@ -9,6 +11,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,15 @@ public class BikeService {
     return bikeRepository.findAll(Example.of(bikeMapper.toEntity(bikeFilter))).stream()
         .map(bikeMapper::toModel)
         .toList();
+  }
+
+  public Bike updateEndStation(UUID bikeId, UUID endStationId) {
+    return getBikeById(bikeId)
+        .map(bike -> bike.setStationId(endStationId))
+        .map(bikeMapper::toEntity)
+        .map(bikeRepository::saveAndFlush)
+        .map(bikeMapper::toModel)
+        .orElseThrow(() -> new ResponseStatusException(UNPROCESSABLE_ENTITY));
   }
 
   public void deleteBikeById(UUID id) {
