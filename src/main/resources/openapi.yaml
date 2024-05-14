@@ -377,6 +377,8 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
 
+security:
+  - ApiKeyAuth: [ ]
 components:
   securitySchemes:
     ApiKeyAuth:
