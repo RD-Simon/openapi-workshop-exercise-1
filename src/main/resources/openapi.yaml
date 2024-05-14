@@ -108,10 +108,10 @@ paths:
             type: string
           description: Filter result by `brand`
         - in: query
-          name: type
+          name: bikeType
           schema:
             $ref: '#/components/schemas/BikeType'
-          description: Filter result by `type`
+          description: Filter result by `bikeType`
         - in: query
           name: electrified
           schema:
@@ -482,9 +482,9 @@ components:
     BikeType:
       type: string
       enum:
-        - Mountainbike
-        - Gravelbike
-        - Trekkingbike
+        - MOUNTAINBIKE
+        - GRAVELBIKE
+        - TREKKINGBIKE
     EndRentalRequest:
       type: object
       required:

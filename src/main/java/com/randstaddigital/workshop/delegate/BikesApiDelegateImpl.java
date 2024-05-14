@@ -48,9 +48,13 @@ public class BikesApiDelegateImpl implements BikesApiDelegate {
 
   @Override
   public ResponseEntity<List<BikeDto>> getBikes(
-      String brand, BikeTypeDto type, Boolean electrified) {
+      String brand, BikeTypeDto bikeType, Boolean electrified) {
     var filter =
-        Bike.builder().brand(brand).type(bikeMapper.toModel(type)).electrified(electrified).build();
+        Bike.builder()
+            .brand(brand)
+            .type(bikeMapper.toModel(bikeType))
+            .electrified(electrified)
+            .build();
     return new ResponseEntity<>(
         bikeService.getAllBikes(filter).stream().map(bikeMapper::toDto).toList(), OK);
   }
