@@ -46,13 +46,10 @@ public class AuthTokenSecurityConfig {
         .authorizeHttpRequests(
             authorizeHttpRequests ->
                 authorizeHttpRequests
-                    .requestMatchers(
-                        mvc.pattern("/actuator/info"),
-                        mvc.pattern("/actuator/health"),
-                        mvc.pattern("/actuator/env"))
+                    .requestMatchers(mvc.pattern("/actuator/*"))
                     .permitAll()
                     .anyRequest()
-                    .permitAll())
+                    .authenticated())
         .build();
   }
 
